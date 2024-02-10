@@ -7,12 +7,21 @@ html(lang="en")
         title COOM
     body 
         header 
+            h1 COOM
         main 
-            form#nick
-                input(type="text", placeholder="Write nickname", required)
-                button Save
-            ul 
-            form#message
-                input(type="text", placeholder="Write message", required)
-                button Send  
+            div#welcome 
+                form
+                    input#roomName(placeholder="Room name", required, type="text")
+                    input#nickName(placeholder="Nickname", required, type="text")
+                    button Enter
+            div#room 
+                h3 
+                ul 
+                form#changeName 
+                    input(placeholder="Nickname", required, type="text")
+                    button Save
+                form#msg
+                    input(placeholder="message", required, type="text")
+                    button Send
+        script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
