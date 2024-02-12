@@ -8,12 +8,17 @@ html(lang="en")
     body 
         header 
             h1 COOM
-        main 
-            div#myStream
-                video#myFace(autoplay, playsinline, width="400", height="400");
-                button#mute Mute
-                button#camera CAM OFF
-                select#cameras
-                    option(value="device") Face Camera
+        main
+            div#welcome
+                form 
+                    input(placeholder="Room Name", required, type="text")
+                    button ENTER
+            div#call
+                div#myStream
+                    video#myFace(autoplay, playsinline, width="400", height="400");
+                    button#mute Mute
+                    button#camera CAM OFF
+                    select#cameras
+                        option(value="device") Face Camera
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
