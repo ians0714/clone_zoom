@@ -9,21 +9,11 @@ html(lang="en")
         header 
             h1 COOM
         main 
-            div#welcome 
-                form
-                    input#roomName(placeholder="Room name", required, type="text")
-                    input#nickName(placeholder="Nickname", required, type="text")
-                    button Enter
-                h4 Open Rooms: 
-                ul
-            div#room 
-                h3
-                ul 
-                form#changeName 
-                    input(placeholder="Nickname", required, type="text")
-                    button Save
-                form#msg
-                    input(placeholder="message", required, type="text")
-                    button Send
+            div#myStream
+                video#myFace(autoplay, playsinline, width="400", height="400");
+                button#mute Mute
+                button#camera CAM OFF
+                select#cameras
+                    option(value="device") Face Camera
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
