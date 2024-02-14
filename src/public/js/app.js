@@ -95,7 +95,7 @@ async function startMedia(){
     welcome.style.display = "none";
     call.style.display = "flex";
     header.style.paddingTop = "0px";
-    header.style.fontSize = "20px";
+    document.querySelector("h1").style.fontSize = "20px";
     await getMedia();
     makeConnection(); // Make connection
 }; // Hide welcome and paint call
@@ -103,6 +103,7 @@ async function startMedia(){
 async function handleRoomEnter(event) {
     event.preventDefault();
     const input = welcome.querySelector("input");
+    document.querySelector("h1").innerText = input.value;
     await startMedia(); // Make connection before join the room
     // 확인 필요
     socket.emit("join_room", input.value);
