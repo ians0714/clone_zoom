@@ -1,12 +1,13 @@
 const socket = io();
 
-const welcome = document.getElementById("welcome");
-const enterForm = welcome.querySelector("form");
-const call = document.getElementById("call");
 const myFace = document.getElementById("myFace");
 const muteBtn = document.getElementById("mute");
 const camBtn = document.getElementById("camera");
 const camSelect = document.getElementById("cameras");
+const call = document.getElementById("call");
+const welcome = document.getElementById("welcome");
+const enterForm = welcome.querySelector("form");
+const header = document.querySelector("header");
 
 let myStream; // Stream
 let muted = false; // Audio State
@@ -14,22 +15,25 @@ let camOff = false; // Camera State
 let roomName; // Accessed Room Name
 let myPeerConnection; // Peer Connection of the browser
 let myDataChannel; // Data Channel of the browser which sends the offer
-welcome.hidden = false; // Open welcome part
-call.hidden = true; // hide call part
+call.style.display = "none"; // hide call part
 
 async function getCameras(){
-    const devices = navigator.mediaDevices.enumerateDevices(); // Get array of all devices
-    const cameras = devices.filter((device) => device.kind === "videoinput"); // Filter and get cam devices
-    const curCam = myStream.getVideoTracks()[0]; // Get current camera track
-    cameras.forEach((cam) => {
-        const option = document.createElement("option");
-        option.value = cam.deviceId;
-        option.innerText = cam.label;
-        if(curCam.label === cam.label){
-            option.selected = true; // Select current camera
-        }
-        camSelect.appendChild(option);
-    }); // Append all cam devices into selection
+    try{
+        const devices = await navigator.mediaDevices.enumerateDevices(); // Get array of all devices
+        const cameras = devices.filter((device) => device.kind === "videoinput"); // Filter and get cam devices
+        const curCam = myStream.getVideoTracks()[0]; // Get current camera track
+        cameras.forEach((cam) => {
+            const option = document.createElement("option");
+            option.value = cam.deviceId;
+            option.innerText = cam.label;
+            if(curCam.label === cam.label){
+                option.selected = true; // Select current camera
+            }
+            camSelect.appendChild(option);
+        }); // Append all cam devices into selection
+    } catch(error){
+        console.log(e);
+    }
 };
 
 async function getMedia(deviceId){
@@ -44,7 +48,7 @@ async function getMedia(deviceId){
             deviceId? camConst : initConst
         ); // Try to get videos
         myFace.srcObject = myStream;
-        if(!deviceId){
+        if(!deviceId){ // 오타?
             await getCameras();
         } // Only runs function at the first time
     } catch (error) {
@@ -88,8 +92,10 @@ async function handleCameraChange() {
 } // Change camera
 
 async function startMedia(){
-    welcome.hidden = true;
-    call.hidden = false;
+    welcome.style.display = "none";
+    call.style.display = "flex";
+    header.style.paddingTop = "0px";
+    header.style.fontSize = "20px";
     await getMedia();
     makeConnection(); // Make connection
 }; // Hide welcome and paint call
@@ -98,6 +104,7 @@ async function handleRoomEnter(event) {
     event.preventDefault();
     const input = welcome.querySelector("input");
     await startMedia(); // Make connection before join the room
+    // 확인 필요
     socket.emit("join_room", input.value);
     roomName = input.value;
     input.value = "";
@@ -159,8 +166,8 @@ function makeConnection(){
         const peerFace = document.getElementById("peerFace");
         peerFace.srcObject = data.streams[0];
     }); // Paint video to peerFace by adding track
-    myStream.getTracks().forEach(track => {
-        myPeerConnection.addtrack(track, myStream);
+    myStream.getTracks().forEach((track) => {
+        myPeerConnection.addTrack(track, myStream);
     }); // Add tracks to send datas of the stream to the connection
 }
 

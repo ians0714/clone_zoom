@@ -3,7 +3,8 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="https://unpkg.com/mvp.css")
+        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
+        link(rel="stylesheet", href="./public/css/styles.css")
         title COOM
     body 
         header 
@@ -16,10 +17,11 @@ html(lang="en")
             div#call
                 div#myStream
                     video#myFace(autoplay, playsinline, width="400", height="400")
-                    button#mute Mute
-                    button#camera CAM OFF
-                    select#cameras
-                        option(value="device") Face Camera
+                    div#controls
+                        button#mute Mute
+                        button#camera CAM OFF
+                        select#cameras
+                            option(value="device") Device Cameras
                 video#peerFace(autoplay, playsinline, width="400", height="400")
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
