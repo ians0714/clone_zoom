@@ -26,7 +26,7 @@ wsServer.on("connection", (socket) => {
     });
     socket.on("ice", (ice, roomName) => {
         socket.to(roomName).emit("ice", ice);
-    })
+    });
 });
 
 const handleListen = () => console.log(`Listening`);

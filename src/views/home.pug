@@ -22,6 +22,9 @@ html(lang="en")
                         button#camera CAM OFF
                         select#cameras
                             option(value="device") Device Cameras
+                div#chatBox
+                    #chat 
+                    input(placeholder="Send a message", required, type="text")  
                 video#peerFace(autoplay, playsinline, width="400", height="400")
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")

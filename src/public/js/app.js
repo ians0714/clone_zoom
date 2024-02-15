@@ -8,6 +8,8 @@ const call = document.getElementById("call");
 const welcome = document.getElementById("welcome");
 const enterForm = welcome.querySelector("form");
 const header = document.querySelector("header");
+const peerFace = document.getElementById("peerFace");
+const chatBox = document.getElementById("chatBox");
 
 let myStream; // Stream
 let muted = false; // Audio State
@@ -16,6 +18,8 @@ let roomName; // Accessed Room Name
 let myPeerConnection; // Peer Connection of the browser
 let myDataChannel; // Data Channel of the browser which sends the offer
 call.style.display = "none"; // hide call part
+peerFace.style.display = "none";
+chatBox.style.display = "none";
 
 async function getCameras(){
     try{
@@ -82,14 +86,14 @@ function handleCameraClick() { // Change cam state
     }
 };
 
-async function handleCameraChange() {
+async function handleCameraChange() { // Change camera
     await getMedia(camSelect.value);
     if(myPeerConnection){ // If we have any peer connections
         const videoTrack = myStream.getVideoTracks()[0]; // Get video tracks we want to change to
         const videoSender = myPeerConnection.getSenders().find((sender)=>sender.track.kind === "video");
         videoSender.replaceTrack(videoTrack); // Find video track and replace it
     }
-} // Change camera
+}
 
 async function startMedia(){
     welcome.style.display = "none";
@@ -104,17 +108,16 @@ async function handleRoomEnter(event) {
     event.preventDefault();
     const input = welcome.querySelector("input");
     document.querySelector("h1").innerText = input.value;
-    await startMedia(); // Make connection before join the room
-    // 확인 필요
+    await startMedia(); // Make connection before join the rooms
     socket.emit("join_room", input.value);
     roomName = input.value;
     input.value = "";
 }; // Send input value and enter the room
 
 // Event Listeners
+enterForm.addEventListener("submit", handleRoomEnter);
 muteBtn.addEventListener("click", handleMuteClick);
 camBtn.addEventListener("click", handleCameraClick);
-enterForm.addEventListener("submit", handleRoomEnter);
 camSelect.addEventListener("input", handleCameraChange);
 
 // Socket Code
@@ -144,6 +147,9 @@ socket.on("answer", (answer) => {
 
 socket.on("ice", (ice) => {
     myPeerConnection.addIceCandidate(ice);
+    peerFace.style.display = "flex";
+    chatBox.style.display = "flex";
+    call.style.justifyContent = "space-between";
 });
 
 // RTC Code
