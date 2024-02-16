@@ -72,11 +72,22 @@ header {
 }
 
 #chat{
+    margin-top: 4px;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    overflow-y: scroll;
 }
 
-#chatBox input{
+#chatBox form{
+    justify-content: center;
+    align-items: center;
+}
+
+#chatBox form input{
+    height: 100%;
+    width: 100%;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     border-radius: 5px;
     background-color: transparent;
@@ -84,6 +95,35 @@ header {
     border-color: #303030;
     border-width: 0px 0px 3px 0px;
     outline: none;
+}
+
+#chat ul {
+    justify-content: center;
+    list-style-type: none;
+    padding: 5px;
+}
+
+#chat::-webkit-scrollbar {
+    width: 4px;
+}
+
+#chat::-webkit-scrollbar-thumb {
+    height: 10%;
+    background: #217af4;
+    border-radius: 5px;
+}
+
+#chat ul li{
+    display: flex;
+    background-color: #505050;
+    width: 180px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    border-radius: 5px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    color: whitesmoke;
+    word-break: keep-all;
+    padding: 2px;
 }
 
 #myStream {

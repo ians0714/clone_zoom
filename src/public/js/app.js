@@ -10,6 +10,7 @@ const enterForm = welcome.querySelector("form");
 const header = document.querySelector("header");
 const peerFace = document.getElementById("peerFace");
 const chatBox = document.getElementById("chatBox");
+const chatInput = chatBox.querySelector("form");
 
 let myStream; // Stream
 let muted = false; // Audio State
@@ -17,6 +18,7 @@ let camOff = false; // Camera State
 let roomName; // Accessed Room Name
 let myPeerConnection; // Peer Connection of the browser
 let myDataChannel; // Data Channel of the browser which sends the offer
+let userName;
 call.style.display = "none"; // hide call part
 peerFace.style.display = "none";
 chatBox.style.display = "none";
@@ -106,24 +108,48 @@ async function startMedia(){
 
 async function handleRoomEnter(event) {
     event.preventDefault();
-    const input = welcome.querySelector("input");
+    const input = document.getElementById("roomName");
+    const name = document.getElementById("name");
+    userName = name.value;
     document.querySelector("h1").innerText = input.value;
     await startMedia(); // Make connection before join the rooms
     socket.emit("join_room", input.value);
     roomName = input.value;
     input.value = "";
+    name.value = "";
 }; // Send input value and enter the room
+
+function addChatMessage(message){
+    const ul = chatBox.querySelector("ul");
+    const li = document.createElement("li");
+    li.innerText = message;
+    ul.appendChild(li);
+    chatInput.querySelector("input").value = "";
+}
+
+async function handleChatSubmit(event){
+    event.preventDefault();
+    const input = chatInput.querySelector("input");
+    const value = input.value;
+    const name = userName;
+    addChatMessage(`Me: ${value}`);
+    if(myDataChannel){
+        myDataChannel.send(`${name}: ${value}`);
+    }
+}
 
 // Event Listeners
 enterForm.addEventListener("submit", handleRoomEnter);
 muteBtn.addEventListener("click", handleMuteClick);
 camBtn.addEventListener("click", handleCameraClick);
 camSelect.addEventListener("input", handleCameraChange);
+chatInput.addEventListener("submit", handleChatSubmit);
 
 // Socket Code
+// Connection
 socket.on("welcome", async () => {
     myDataChannel = myPeerConnection.createDataChannel("chat");
-    myDataChannel.addEventListener("message", (event) => console.log(event.data));
+    myDataChannel.addEventListener("message", (event) => addChatMessage(event.data));
     // Create data channel
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
@@ -133,7 +159,7 @@ socket.on("welcome", async () => {
 socket.on("offer", async (offer) => { // Got an offer
     myPeerConnection.addEventListener("datachannel", (event) => {
         myDataChannel = event.channel;
-        myDataChannel.addEventListener("message", (event) => console.log(event.data));
+        myDataChannel.addEventListener("message", (event) => addChatMessage(event.data));
     }); // Get created data channel
     myPeerConnection.setRemoteDescription(offer);
     const answer = await myPeerConnection.createAnswer();
@@ -151,6 +177,7 @@ socket.on("ice", (ice) => {
     chatBox.style.display = "flex";
     call.style.justifyContent = "space-between";
 });
+// Chat
 
 // RTC Code
 function makeConnection(){

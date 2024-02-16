@@ -12,7 +12,8 @@ html(lang="en")
         main
             div#welcome
                 form 
-                    input(placeholder="Room Name", required, type="text")
+                    input#roomName(placeholder="Room Name", required, type="text")
+                    input#name(placeholder="User Name", required, type="text") 
                     button ENTER
             div#call
                 div#myStream
@@ -23,8 +24,10 @@ html(lang="en")
                         select#cameras
                             option(value="device") Device Cameras
                 div#chatBox
+                    form
+                        input(placeholder="Send a message", required, type="text") 
                     #chat 
-                    input(placeholder="Send a message", required, type="text")  
+                        ul 
                 video#peerFace(autoplay, playsinline, width="400", height="400")
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
