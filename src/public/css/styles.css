@@ -6,6 +6,7 @@ body {
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     background-color: #5b6a7c30;
     color: #505050;
+    margin-top: 0;
 }
 
 header {
@@ -13,6 +14,17 @@ header {
     text-align: center;
 }
 
+h1 {
+    font-size: 50px;
+}
+
+main {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+/* Welcome */
 #welcome{
     display: flex;
     flex-direction: column;
@@ -58,12 +70,12 @@ header {
     border: none;
     cursor: pointer;
 }
-
+/* Call */
 #call {
     justify-content: center;
     align-items: center;
 }
-
+/* Chat Box */
 #chatBox{
     height: 380px;
     width: 200px;
@@ -125,7 +137,7 @@ header {
     word-break: keep-all;
     padding: 2px;
 }
-
+/* My Video */
 #myStream {
     display: flex;
     flex-direction: column;
@@ -164,19 +176,4 @@ header {
 
 #myFace {
     padding-bottom: 2px;
-}
-
-h1 {
-    font-size: 50px;
-}
-
-main {
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    margin-top: 30px;
-}
-
-body{
-    margin-top: 0;
 }
