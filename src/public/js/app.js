@@ -18,17 +18,24 @@ let camOff = false; // Camera State
 let roomName; // Accessed Room Name
 let myPeerConnection; // Peer Connection of the browser
 let myDataChannel; // Data Channel of the browser which sends the offer
-let userName;
-call.style.display = "none"; // hide call part
-peerFace.style.display = "none";
-chatBox.style.display = "none";
+let userName; // User Name
+call.style.display = "none"; // Hide call part
+peerFace.style.display = "none"; // Hide Peer Face Cam
+chatBox.style.display = "none"; // Hide Chat Box
+
+function removeOptions(selectElement) { // Remove options while disconnecting
+    var i, L = selectElement.options.length - 1;
+    for(i = L; i >= 0; i--) {
+       selectElement.remove(i);
+    }
+};
 
 async function getCameras(){
     try{
         const devices = await navigator.mediaDevices.enumerateDevices(); // Get array of all devices
         const cameras = devices.filter((device) => device.kind === "videoinput"); // Filter and get cam devices
         const curCam = myStream.getVideoTracks()[0]; // Get current camera track
-        cameras.forEach((cam) => {
+        cameras.forEach((cam) => { // Add all camera options
             const option = document.createElement("option");
             option.value = cam.deviceId;
             option.innerText = cam.label;
@@ -54,7 +61,7 @@ async function getMedia(deviceId){
             deviceId? camConst : initConst
         ); // Try to get videos
         myFace.srcObject = myStream;
-        if(!deviceId){ // 오타?
+        if(!deviceId){
             await getCameras();
         } // Only runs function at the first time
     } catch (error) {
@@ -106,36 +113,30 @@ async function startMedia(){
     makeConnection(); // Make connection
 }; // Hide welcome and paint call
 
-function removeOptions(selectElement) {
-    var i, L = selectElement.options.length - 1;
-    for(i = L; i >= 0; i--) {
-       selectElement.remove(i);
-    }
- };
 
 async function closeMedia(){
     myStream.getTracks().forEach((track) => {
         if(track.readyState === "live"){
             track.stop();
         }
-    });
+    }); // Stop Stream
     myStream.srcObject = null;
     if(peerFace?.srcObject){
         peerFace.srcObject.getTracks().forEach((track) => {
             track.stop();
         });
         peerFace.srcObject = null;
-    }
+    } // Remove peerFace Source Object;
     camSelect.innerHTML = "";
     muteBtn.innerText = "Mute";
-    camBtn.innerText = "CAM OFF";
+    camBtn.innerText = "CAM OFF"; // Rollback Html Elements(I think it's useless)
 };
 
 async function handleRoomEnter(event) {
     event.preventDefault();
     const input = document.getElementById("roomName");
     const name = document.getElementById("name");
-    userName = name.value;
+    userName = name.value; // Save user name
     document.querySelector("h1").innerText = input.value;
     await startMedia(); // Make connection before join the rooms
     socket.emit("join_room", input.value);
@@ -150,7 +151,7 @@ function addChatMessage(message){
     li.innerText = message;
     ul.appendChild(li);
     chatInput.querySelector("input").value = "";
-}
+} // Add Chat Log to Chat Box
 
 async function handleChatSubmit(event){
     event.preventDefault();
@@ -161,7 +162,7 @@ async function handleChatSubmit(event){
     if(myDataChannel){
         myDataChannel.send(`${name}: ${value}`);
     }
-}
+} // Send Chat
 
 // Event Listeners
 enterForm.addEventListener("submit", handleRoomEnter);
@@ -223,7 +224,6 @@ socket.on("disconnected", async () => {
     chatBox.style.display = "none";
     welcome.style.display = "flex";
 });
-// Chat
 
 // RTC Code
 function makeConnection(){

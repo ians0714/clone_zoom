@@ -13,13 +13,13 @@ app.get("/*", (_, res) => res.redirect("/"));
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
-wsServer.on("connection", (socket) => {
-    socket.on("join_room", (roomName) => {
-        socket.join(roomName);
-        socket.to(roomName).emit("welcome");
-        socket.on("disconnecting", ()=> {
-            socket.broadcast.to(roomName).emit("disconnected");
-            socket.leave(roomName);
+wsServer.on("connection", (socket) => { // When connected
+    socket.on("join_room", (roomName) => { // If join_room event
+        socket.join(roomName); // Join to the room
+        socket.to(roomName).emit("welcome"); // Send welcome event
+        socket.on("disconnecting", ()=> { // If disconnecting
+            socket.broadcast.to(roomName).emit("disconnected"); // Send disconnected event
+            socket.leave(roomName); // Leave the room
         });
     });
     socket.on("offer", (offer, roomName) => {
