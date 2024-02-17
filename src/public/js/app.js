@@ -38,7 +38,7 @@ async function getCameras(){
             camSelect.appendChild(option);
         }); // Append all cam devices into selection
     } catch(error){
-        console.log(e);
+        console.log(error);
     }
 };
 
@@ -105,6 +105,31 @@ async function startMedia(){
     await getMedia();
     makeConnection(); // Make connection
 }; // Hide welcome and paint call
+
+function removeOptions(selectElement) {
+    var i, L = selectElement.options.length - 1;
+    for(i = L; i >= 0; i--) {
+       selectElement.remove(i);
+    }
+ };
+
+async function closeMedia(){
+    myStream.getTracks().forEach((track) => {
+        if(track.readyState === "live"){
+            track.stop();
+        }
+    });
+    myStream.srcObject = null;
+    if(peerFace?.srcObject){
+        peerFace.srcObject.getTracks().forEach((track) => {
+            track.stop();
+        });
+        peerFace.srcObject = null;
+    }
+    camSelect.innerHTML = "";
+    muteBtn.innerText = "Mute";
+    camBtn.innerText = "CAM OFF";
+};
 
 async function handleRoomEnter(event) {
     event.preventDefault();
@@ -176,6 +201,27 @@ socket.on("ice", (ice) => {
     peerFace.style.display = "flex";
     chatBox.style.display = "flex";
     call.style.justifyContent = "space-between";
+});
+
+socket.on("disconnected", async () => {
+    myDataChannel.close()
+    myPeerConnection.close();
+    myDataChannel = null;
+    myPeerConnection = null;
+    await closeMedia();
+    roomName = "";
+    userName = "";
+    document.getElementById("roomName").innerText = "Room Name";
+    document.getElementById("name").innerText = "User Name";
+    var ul = chatBox.querySelector("ul");
+    while(ul.firstChild){ul.removeChild(ul.firstChild)};
+    header.style.paddingTop = "110px";
+    document.querySelector("h1").style.fontSize = "50px";
+    document.querySelector("h1").innerText = "COOM";
+    call.style.display = "none";
+    peerFace.style.display = "none";
+    chatBox.style.display = "none";
+    welcome.style.display = "flex";
 });
 // Chat
 
